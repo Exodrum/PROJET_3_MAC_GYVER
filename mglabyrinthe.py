@@ -3,7 +3,7 @@
 
 """
 Mac Gyver Game
-Game where you have to pick up objects for win the Gardin.
+Game where you have to pick up items for win the Gard.
 
 Script Python
 Files : mglabyrinthe.py, classes.py, constantes.py, lvl1 + pictures
@@ -11,20 +11,17 @@ Files : mglabyrinthe.py, classes.py, constantes.py, lvl1 + pictures
 
 import pygame
 from pygame.locals import *
-
 from classes import *
-from constantes import *
+from constants import *
 
 pygame.init()
-
 window = pygame.display.set_mode((size_window_2, size_window))
-
 # Icone
 icone = pygame.image.load("img/mac_gyver_right.png")
 pygame.display.set_icon(icone)
-
 # Title
-pygame.display.set_caption("mglabyrinthe")
+pygame.display.set_caption("Mac Gyver labyrinthe")
+myfont = pygame.font.SysFont('Monospace', 20, True)
 
 # PRINCIPAL LOOP
 continu = 1
@@ -76,13 +73,26 @@ while continu:
 		level.toggle(window)
 
 		# Create Mac Gyver
-		mg = Character("img/mac_gyver_right.png", "img/mac_gyver_left.png",
+		mg = MACGYVER("img/mac_gyver_right.png", "img/mac_gyver_left.png",
 		"img/mac_gyver_top.png", "img/mac_gyver_down.png", level)
+
+		# Create Guardian
+		guardian = Guardian("img/guardian.png", level)
+		
+		# Create Items
+		launcher = Item("N", img_launcher, level)
+		launcher.display(window)
+		rocket = Item("E", img_rocket, level)
+		rocket.display(window)
+
+		#Game elements initialization
+		
 
 
 	# GAME LOOP
 	while continu_game:
-
+		# Create inventory interface
+		inventory = myfont.render(mg.inventory(), False, (255, 255, 255))
 		# Speed limit loop
 		pygame.time.Clock().tick(30)
 
@@ -109,32 +119,48 @@ while continu:
 				elif event.key == K_DOWN:
 					mg.move('down')
 
-				# If mac gyver win 
-				"""if mg.status == win:
-					print(config["end_msg_win"])
-				# If mac gyver lost
-				elif mg.status == lost:
-					print(config["end_msg_win"])
+		# Methode take an item
+		if level.structure[mg.case_y][mg.case_x] == launcher.id:
+			launcher.damage()
+			mg.getitem()
+		if level.structure[mg.case_y][mg.case_x] == rocket.id:
+			rocket.damage()
+			mg.getitem()
 
-				# If mac gyver 
-				if mg.status != try_again:
-					print("Try again ? Press (y/n)")
-					continu_game = 0
+		# Guard interaction
+		if level.structure[mg.case_y][mg.case_x] == 'l':
+			if mg.items >= 3:
+				guardian.damage()
+				level.structure[mg.case_y][mg.case_x] = '0'
 
+			# LOOSE
 			else:
-				if event.key == K_y:
-					mg.reset()
-					level.reset()
-					end_game = 0
-				elif event.key == K_n:
-					continu_game = 0"""
+				loose = 1
+				while loose:
+					pygame.time.Clock().tick(30)
+					window.blit(loose, window_loose)
+					for event in pygame.event.get():
+						if event.type == KEYDOWN and event.key == K_ESCAPE:
+							lose = 0
+							continu_game = 0
+					pygame.display.flip()
 
+		# WIN
+		if level.structure[mg.case_y][mg.case_x] == 'e' and mg.items >= 3:
+			win = 1
+			while loose:
+				pygame.time.Clock().tick(30)
+				window.blit(win, window_win)
+				for event in pygame.event.get():
+					if event.type == KEYDOWn and event.key == K_EXCAPE:
+						win = 0
+						continu_game = 0
+				pygame.display.flip()
 
 
 		# Toggle new positions
 		window.blit(background, (0,0))
 		level.toggle(window)
-		window.blit(mg.direction, (mg.x, mg.y)) #mg.direction = l'image dans la bonne direction
+		launcher.display(window)
+		rocket.display(window)
 		pygame.display.flip()
-
-		

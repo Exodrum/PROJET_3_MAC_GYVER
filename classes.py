@@ -2,51 +2,42 @@
 
 import pygame
 from pygame.locals import *
-from constantes import *
-#from random import randint
+from constants import *
+import random
 
 
 class Level:
 	""" Class make a level """
 	def __init__ (self, file):
-		self.file = file
+		self.file = file # lvl.txt
 		self.structure = 0
-
-	"""def reset(self):
-		# Methode generate random position for items after game reset
-		# Browse item file
-		for item in self.items:
-			# Give a position to item on empty position 0 (no wall, no character)
-			self.file[self.items[item].pos_y][self.items[item].pos_x] = "0"
-			self.items[item] = Item(self.random_position())"""
-
 
 	def generate(self):
 		# Method for generate level with a file
 		# Create a general list, contains a list per toggle lign
 		# Open the file
 		with open(self.file, "r") as file:
-			structure_level = []
+			structure_level = [] # Initialized as empty list to save level structure
 			# Browse file lign
-			for lign in file:
-				lign_level = []
-				# Browse sprites (letters) contains in file
-				for sprite in lign:
+			for line in file:
+				line_level = []
+				# Browse sprites (letters) con"tains in file
+				for sprite in line:
 					# Ignore the "\n" of lign end
 					if sprite != '\n':
 						# Add the sprite at the lign list
-						lign_level.append(sprite)
+						line_level.append(sprite)
 				# Add the ligne at the level list
-				structure_level.append(lign_level)
+				structure_level.append(line_level)
 			# Save the structure
 			self.structure = structure_level
+
 
 	def toggle(self, window):
 		# Method for toggle the level of the structure send by generate()
 		# Load pictures
 		wall = pygame.image.load(img_wall).convert_alpha()
-		start = pygame.image.load(img_start).convert_alpha()
-		end = pygame.image.load(img_end).convert_alpha()
+		guard = pygame.image.load(img_guardian).convert_alpha()
 
 		# Browse level list
 		num_lign = 0
@@ -59,32 +50,13 @@ class Level:
 				y = num_case * size_sprite
 				if sprite == 'w':	# m = wall
 					window.blit(wall, (x,y))
-				elif sprite == 's':	# d = start
-					window.blit(start, (x,y))
-				elif sprite == 'e':	# e = end
-					window.blit(end, (x,y))
+				elif sprite == 'e':	# e = guard
+					window.blit(guard, (x,y))
 				num_case += 1
 			num_lign += 1
 
 
-"""class Item:
-	# Describe an item
-	def __init__(self, position):
-
-		self.launcher = pygame.image.load(img_launcher).convert_alpha()
-		self.rocket = pygame.image.load(img_rocket).convert_alpha()
-
-		self.case_x = position[0]
-		self.case_y = position[1]
-		self.show = 1
-
-	@property
-	def pixel_position(self):
-		#Pixel position of the item
-		return [self.case_x * sprite_size, self.case_y * sprite_size]"""
-
-
-class Character:
+class MACGYVER:
 	""" Class make a character """
 	def __init__(self, right, left, top, down, level):
 		#Sprites du personnage
@@ -101,12 +73,7 @@ class Character:
 		self.direction = self.right
 		# Level where the character in
 		self.level = level
-
-
-	"""def reset(self):
-		# Give an character initial position and clear his items
-		self.case_y, self.case_x = self.initial_position(self.level)
-		self.num_items = 0"""
+		self.item = 0 # Mac gyver have 0 items
 
 
 	def move(self, direction):
@@ -123,36 +90,77 @@ class Character:
 					# Calcul real pixel position
 					self.x = self.case_x * size_sprite
 
-		# Move to left
 		if direction == 'left':
-			# Don't get out of the screen
 			if self.case_x > 0:
-				# Check if the destination case is not a wall
 				if self.level.structure[self.case_y][self.case_x-1] != 'w':
-					#Move one case
 					self.case_x -= 1
-					# Calcul real pixel position
 					self.x = self.case_x * size_sprite
 
-		# Move to right
 		if direction == 'top':
-			# Don't get out of the screen
 			if self.case_y > 0:
-				# Check if the destination case is not a wall
 				if self.level.structure[self.case_y-1][self.case_x] != 'w':
-					#Move one case
 					self.case_y -= 1
-					# Calcul real pixel position
 					self.y = self.case_y * size_sprite
 
-		# Move to right
 		if direction == 'down':
-			# Don't get out of the screen
 			if self.case_y < (number_sprite_height - 1):
-				# Check if the destination case is not a wall
 				if self.level.structure[self.case_y+1][self.case_x] != 'w':
-					#Move one case
 					self.case_y += 1
-					# Calcul real pixel position
 					self.y = self.case_y * size_sprite
 
+
+	def take_item(self, *item):
+		self.item +=1
+
+	def damage(self):
+		self.health -= 1
+
+	def inventory(self):
+		text = "Inventory : " + str(self.item)
+		return text
+		
+
+class Guardian:
+	""" Class make a character """
+	def __init__(self, guardian, level):
+		#Sprites du personnage
+		self.guardian = pygame.image.load(guardian).convert_alpha()
+		# Character pixel & cases position 
+		self.case_x = 14
+		self.case_y = 14
+		self.x = 0
+		self.y = 0
+		# Level where the character in
+		self.level = level
+		
+
+class Item:
+	"""Class to create an item"""
+	def __init__(self, name,  path, level):
+		"""Initial settings for the item"""
+		self.id = name
+		self.health = 1
+		self.level = level
+		self.case_x, self.case_y = self.randpos()
+		self.x = self.case_x * size_sprite
+		self.y = self.case_y * size_sprite
+		self.sprite = pygame.image.load(path).convert_alpha()
+
+	def randpos(self):
+		"""Method to place randomly the 'Items' on the map"""
+		while True:
+			self.case_x = random.randrange(1, 14)
+			self.case_y = random.randrange(1, 14)
+			if self.level.structure[self.case_y][self.case_x] == '0':
+				self.level.structure[self.case_y][self.case_x] = self.id
+				break
+		return self.case_x, self.case_y
+
+	def damage(self):
+		self.health -= 1
+		self.level.structure[self.case_y][self.case_x] = '0'
+
+	def display(self, window):
+		"""Display the item on screen"""
+		if self.health > 0:
+			window.blit(self.sprite, (self.x, self.y))
