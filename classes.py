@@ -69,11 +69,10 @@ class MACGYVER:
 		self.case_y = 0
 		self.x = 128
 		self.y = 0
-		# Default direction
-		self.direction = self.right
 		# Level where the character in
 		self.level = level
 		self.item = 0 # Mac gyver have 0 items
+		self.health = 1
 
 
 	def move(self, direction):
@@ -149,7 +148,7 @@ class Item:
 	def randpos(self):
 		"""Method to place randomly the 'Items' on the map"""
 		while True:
-			self.case_x = random.randrange(1, 14)
+			self.case_x = random.randrange(1, 25)
 			self.case_y = random.randrange(1, 14)
 			if self.level.structure[self.case_y][self.case_x] == '0':
 				self.level.structure[self.case_y][self.case_x] = self.id
