@@ -77,12 +77,12 @@ while continu:
 		"img/mac_gyver_top.png", "img/mac_gyver_down.png", level)
 
 		# Create Guardian
-		guardian = Guardian("img/guardian.png", level)
+		guard = Guardian("img/guardian.png", level)
 		
 		# Create Items
-		launcher = Item("N", img_launcher, level)
+		launcher = Item("n", img_launcher, level)
 		launcher.display(window)
-		rocket = Item("E", img_rocket, level)
+		rocket = Item("e", img_rocket, level)
 		rocket.display(window)
 
 		#Game elements initialization
@@ -138,7 +138,7 @@ while continu:
 				loose = 1
 				while loose:
 					pygame.time.Clock().tick(30)
-					window.blit(loose, window_loose)
+					window.blit(loose, pos_loose)
 					for event in pygame.event.get():
 						if event.type == KEYDOWN and event.key == K_ESCAPE:
 							lose = 0
@@ -150,9 +150,9 @@ while continu:
 			win = 1
 			while loose:
 				pygame.time.Clock().tick(30)
-				window.blit(win, window_win)
+				window.blit(win, pos_win)
 				for event in pygame.event.get():
-					if event.type == KEYDOWn and event.key == K_EXCAPE:
+					if event.type == KEYDOWN and event.key == K_ESCAPE:
 						win = 0
 						continu_game = 0
 				pygame.display.flip()
@@ -160,6 +160,7 @@ while continu:
 
 		# Toggle new positions
 		window.blit(background, (0,0))
+		window.blit(inventory, pos_inventory)
 		level.toggle(window)
 		launcher.display(window)
 		rocket.display(window)
