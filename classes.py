@@ -37,7 +37,6 @@ class Level:
 		# Method for toggle the level of the structure send by generate()
 		# Load pictures
 		wall = pygame.image.load(img_wall).convert_alpha()
-		guard = pygame.image.load(img_guardian).convert_alpha()
 
 		# Browse level list
 		num_lign = 0
@@ -50,8 +49,6 @@ class Level:
 				y = num_case * size_sprite
 				if sprite == 'w':	# m = wall
 					window.blit(wall, (x,y))
-				elif sprite == 'e':	# e = guard
-					window.blit(guard, (x,y))
 				num_case += 1
 			num_lign += 1
 
@@ -69,10 +66,11 @@ class MACGYVER:
 		self.case_y = 0
 		self.x = 128
 		self.y = 0
+		# Direction par default
+		self.direction = self.right
 		# Level where the character in
 		self.level = level
 		self.item = 0 # Mac gyver have 0 items
-		self.health = 1
 
 
 	def move(self, direction):
@@ -88,24 +86,32 @@ class MACGYVER:
 					self.case_x += 1
 					# Calcul real pixel position
 					self.x = self.case_x * size_sprite
+			#Image dans la bonne direction
+			self.direction = self.right
 
 		if direction == 'left':
 			if self.case_x > 0:
 				if self.level.structure[self.case_y][self.case_x-1] != 'w':
 					self.case_x -= 1
 					self.x = self.case_x * size_sprite
+			#Image dans la bonne direction
+			self.direction = self.left
 
 		if direction == 'top':
 			if self.case_y > 0:
 				if self.level.structure[self.case_y-1][self.case_x] != 'w':
 					self.case_y -= 1
 					self.y = self.case_y * size_sprite
+			#Image dans la bonne direction
+			self.direction = self.top
 
 		if direction == 'down':
 			if self.case_y < (number_sprite_height - 1):
 				if self.level.structure[self.case_y+1][self.case_x] != 'w':
 					self.case_y += 1
 					self.y = self.case_y * size_sprite
+			#Image dans la bonne direction
+			self.direction = self.down
 
 
 	def take_item(self, *item):
@@ -117,7 +123,7 @@ class MACGYVER:
 	def inventory(self):
 		text = "Inventory : " + str(self.item)
 		return text
-		
+
 
 class Guardian:
 	""" Class make a character """
@@ -129,14 +135,14 @@ class Guardian:
 		self.case_y = 14
 		self.x = 0
 		self.y = 0
-		# Level where the character in
+		# Level where the character in 
 		self.level = level
 		
 
 class Item:
-	"""Class to create an item"""
+	# Class to create an item
 	def __init__(self, name,  path, level):
-		"""Initial settings for the item"""
+		#Initial settings for the item
 		self.id = name
 		self.health = 1
 		self.level = level
@@ -146,7 +152,7 @@ class Item:
 		self.sprite = pygame.image.load(path).convert_alpha()
 
 	def randpos(self):
-		"""Method to place randomly the 'Items' on the map"""
+		# Method to place randomly the 'Items' on the map
 		while True:
 			self.case_x = random.randrange(1, 25)
 			self.case_y = random.randrange(1, 14)
@@ -160,6 +166,6 @@ class Item:
 		self.level.structure[self.case_y][self.case_x] = '0'
 
 	def display(self, window):
-		"""Display the item on screen"""
+		#Display the item on screen
 		if self.health > 0:
-			window.blit(self.sprite, (self.x, self.y))
+			window.blit(self.sprite, (self.x, self.y)) 
