@@ -17,17 +17,18 @@ from constants import *
 pygame.init()
 window = pygame.display.set_mode((size_window_2, size_window))
 # Icone
-icone = pygame.image.load("img/mac_gyver_right.png")
+icone = pygame.image.load(img_icone)
 pygame.display.set_icon(icone)
 # Title
-pygame.display.set_caption("Mac Gyver labyrinthe")
+pygame.display.set_caption(window_title)
+# Font
 myfont = pygame.font.SysFont('Monospace', 20, True)
 
 # PRINCIPAL LOOP
 continu = 1
 while continu:
 	#Load & toggle home
-	home = pygame.image.load(img_home)
+	home = pygame.image.load(img_home).convert()
 	window.blit(home, (0,0))
 
 	#Refresh
@@ -87,8 +88,6 @@ while continu:
 
 		#Game elements initialization
 		
-
-
 	# GAME LOOP
 	while continu_game:
 		# Create inventory interface
@@ -119,25 +118,29 @@ while continu:
 				elif event.key == K_DOWN:
 					mg.move('down')
 
+		pygame.display.flip()
+		
 		# Methode take an item
 		if level.structure[mg.case_y][mg.case_x] == launcher.id:
 			launcher.damage()
-			mg.getitem()
+			mg.take_item()
 		if level.structure[mg.case_y][mg.case_x] == rocket.id:
 			rocket.damage()
-			mg.getitem()
-
+			mg.take_item()
+		
 		# Guard interaction
 		if level.structure[mg.case_y][mg.case_x] == 'l':
-			if mg.items >= 3:
+			if mg.item >= 3:
 				guardian.damage()
 				level.structure[mg.case_y][mg.case_x] = '0'
-
+		
+		
 			# LOOSE
 			else:
 				loose = 1
 				while loose:
 					pygame.time.Clock().tick(30)
+					loose = pygame.image.load("img/loose.png")
 					window.blit(loose, pos_loose)
 					for event in pygame.event.get():
 						if event.type == KEYDOWN and event.key == K_ESCAPE:
@@ -146,17 +149,18 @@ while continu:
 					pygame.display.flip()
 
 		# WIN
-		if level.structure[mg.case_y][mg.case_x] == 'e' and mg.items >= 3:
+		if level.structure[mg.case_y][mg.case_x] == 'e' and mg.item >= 2:
 			win = 1
-			while loose:
+			while win:
 				pygame.time.Clock().tick(30)
+				win = pygame.image.load("img/win.png")
 				window.blit(win, pos_win)
 				for event in pygame.event.get():
 					if event.type == KEYDOWN and event.key == K_ESCAPE:
 						win = 0
 						continu_game = 0
 				pygame.display.flip()
-
+		
 
 		# Toggle new positions
 		window.blit(background, (0,0))
@@ -164,4 +168,5 @@ while continu:
 		level.toggle(window)
 		launcher.display(window)
 		rocket.display(window)
+		window.blit(mg.direction, (mg.x, mg.y)) #dk.direction = l'image dans la bonne direction
 		pygame.display.flip()
