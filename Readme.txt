@@ -3,8 +3,8 @@
 Contient les fichiers :
 - mglabyrinthe.py
 - classes.py
-- constantes.py
-- pictures
+- constants.py
+- folder/img
 
 Description :
 Projet n°3 du cursus 'développeurs application python', où l'on doit créer un jeu en python avec le module pygame, (Jeu ou Mac Gyver est dans un labyrinthe et doit en sortir).
