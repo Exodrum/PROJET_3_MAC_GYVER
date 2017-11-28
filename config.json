@@ -1,4 +1,0 @@
-"items": {"launcher": {"img": "img/laucher.png", "msg": "[Mac Gyver] Oh yeah baby ! Let's go to explose the Guardian !"},
-		"rocket": {"img": "img/rocket.png", "msg": "[Mac Gyver] Ammo for a rocket laucher."}},
-"end_msg_win": "\n[Mac Gyver] Alright, there is no evolution without freedom, take my rocket in your face !\n [Guardian] Oh my god, please don't explode me ! *AAARRRRGHH*\n[Escape Valid !]",
-"end_msg_lost": "\n[Guardian] Who are you ? Die !\n [Mac Gyver] *ARRGH* [You die]"
