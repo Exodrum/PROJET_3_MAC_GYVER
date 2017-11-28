@@ -22,7 +22,7 @@ pygame.display.set_icon(icone)
 # Title
 pygame.display.set_caption(window_title)
 # Font
-myfont = pygame.font.SysFont('Monospace', 20, True)
+myfont = pygame.font.SysFont('Arial', 20, True)
 
 # PRINCIPAL LOOP
 continu = 1
@@ -74,17 +74,15 @@ while continu:
 		level.toggle(window)
 
 		# Create Mac Gyver
-		mg = MACGYVER("img/mac_gyver_right.png", "img/mac_gyver_left.png",
+		mg = MacGyver("img/mac_gyver_right.png", "img/mac_gyver_left.png",
 		"img/mac_gyver_top.png", "img/mac_gyver_down.png", level)
 
 		# Create Guardian
 		guard = Guardian("img/guardian.png", level)
-		
+
 		# Create Items
 		launcher = Item("n", img_launcher, level)
-		launcher.display(window)
-		rocket = Item("e", img_rocket, level)
-		rocket.display(window)
+		rocket = Item("r", img_rocket, level)
 
 		#Game elements initialization
 		
@@ -130,8 +128,8 @@ while continu:
 		
 		# Guard interaction
 		if level.structure[mg.case_y][mg.case_x] == 'l':
-			if mg.item >= 3:
-				guardian.damage()
+			if mg.item >= 2:
+				guard.damage()
 				level.structure[mg.case_y][mg.case_x] = '0'
 		
 		
@@ -144,7 +142,7 @@ while continu:
 					window.blit(loose, pos_loose)
 					for event in pygame.event.get():
 						if event.type == KEYDOWN and event.key == K_ESCAPE:
-							lose = 0
+							loose = 0
 							continu_game = 0
 					pygame.display.flip()
 
