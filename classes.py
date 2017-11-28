@@ -36,6 +36,7 @@ class Level:
 	def toggle(self, window):
 		# Method for toggle the level of the structure send by generate()
 		# Load pictures
+		guard = pygame.image.load(img_guard).convert_alpha()
 		wall = pygame.image.load(img_wall).convert_alpha()
 
 		# Browse level list
@@ -45,15 +46,17 @@ class Level:
 			num_case = 0
 			for sprite in lign:
 				# Calcul real position in pixels
-				x = num_case * size_sprite
-				y = num_case * size_sprite
-				if sprite == 'w':	# m = wall
+				x = num_case * size_sprite + inventory_x
+				y = num_case * size_sprite + inventory_y
+				if sprite == 'w':	# w = wall
 					window.blit(wall, (x,y))
+				if sprite == 'e': # e = guard
+					window.blit(guard, (x,y))
 				num_case += 1
 			num_lign += 1
 
 
-class MACGYVER:
+class MacGyver:
 	""" Class make a character """
 	def __init__(self, right, left, top, down, level):
 		#Sprites du personnage
@@ -127,16 +130,20 @@ class MACGYVER:
 
 class Guardian:
 	""" Class make a character """
-	def __init__(self, guardian, level):
+	def __init__(self, guard, level):
 		#Sprites du personnage
-		self.guardian = pygame.image.load(guardian).convert_alpha()
+		self.guard = pygame.image.load(guard)
 		# Character pixel & cases position 
 		self.case_x = 14
 		self.case_y = 14
-		self.x = 0
-		self.y = 0
+		self.x = 448
+		self.y = 448
 		# Level where the character in 
 		self.level = level
+		self.health = 1
+
+	def damage(self):
+		self.health -= 1
 		
 
 class Item:
