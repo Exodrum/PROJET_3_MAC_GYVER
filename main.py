@@ -10,13 +10,14 @@ Files : mglabyrinthe.py, classes.py, constantes.py, lvl1 + pictures
 """
 
 import pygame    # import module pygame
-from pygame.locals import *    # import all lib pygame
+import pygame.locals    # import all lib pygame
 
 from classe import *    # import all class from a file
-from constants import *    # import all constants from a file
+from constants_main import *    # import all constants from a file
+
 
 pygame.init()
-window = pygame.display.set_mode((size_window_2, size_window))
+window = pygame.display.set_mode((size_window_width, size_window_height))
 # Icone
 icone = pygame.image.load(img_icone)
 pygame.display.set_icon(icone)
@@ -30,7 +31,7 @@ continu = 1
 while continu:
     #Load & toggle home
     home = pygame.image.load(img_home).convert()
-    window.blit(home, (0,0))
+    window.blit(home, (0, 0))
 
     #Refresh
     pygame.display.flip()
@@ -77,10 +78,10 @@ while continu:
 
         # Create Mac Gyver
         mac_gyver = MacGyver("img/mac_gyver_right.png",
-            "img/mac_gyver_left.png",
-            "img/mac_gyver_top.png", 
-            "img/mac_gyver_down.png", 
-            level)
+                             "img/mac_gyver_left.png",
+                             "img/mac_gyver_top.png",
+                             "img/mac_gyver_down.png",
+                             level)
 
         # Create Guardian
         guard = Guardian(level)
@@ -121,15 +122,15 @@ while continu:
 
         pygame.display.flip()
 
-        """ Methode take an item """
-        if level.structure[mac_gyver.case_y][mac_gyver.case_x] == launcher.id:
+        # Methode take an item
+        if level.structure[mac_gyver.case_y][mac_gyver.case_x] == launcher.identification:
             launcher.damage()
             mac_gyver.take_item()
-        if level.structure[mac_gyver.case_y][mac_gyver.case_x] == rocket.id:
+        if level.structure[mac_gyver.case_y][mac_gyver.case_x] == rocket.identification:
             rocket.damage()
             mac_gyver.take_item()
 
-        """ Guard interaction """
+        # Guard interaction
         if level.structure[mac_gyver.case_y][mac_gyver.case_x] == 'l':
             if mac_gyver.item >= 2:
                 guard.damage()
@@ -162,13 +163,15 @@ while continu:
                         win = 0
                         continu_game = 0
                 pygame.display.flip()
-		
 
-        # Toggle new positions
-        window.blit(background, (0,0))
+
+        # Display new positions
+        window.blit(background, (0, 0))
         window.blit(inventory, pos_inventory)
         level.toggle(window)
         launcher.display(window)
         rocket.display(window)
-        window.blit(mac_gyver.direction, (mac_gyver.x, mac_gyver.y)) #dk.direction = l'image dans la bonne direction
+        #mg.direction = l'image dans la bonne direction
+        window.blit(mac_gyver.direction,
+                    (mac_gyver.pixel_x, mac_gyver.pixel_y))
         pygame.display.flip()
